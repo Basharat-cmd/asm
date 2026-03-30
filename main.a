@@ -1,0 +1,3 @@
+/*label*/greet:
+std::cout << "Hello " << __vars_["_1"];
+_greet_end:
