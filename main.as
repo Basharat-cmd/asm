@@ -1,18 +1,17 @@
+import test t
+import std std
 :start
-$_1 = "Basharat"
-$a = "hi"
-goto greet
-:_greet_end
-"a = $a"
-endl
-:end
+"a"
+$_1 = "a"
+goto _t_greet
+:_t__greet_end
+$_1 = "onnewline"
+goto _std_println
+:_std__println_end
 
-:greet
-push $a
-$a = "$_1"
-push
-"Hello $a"
-pop
-pop $a
-endl
-goto _greet_end
+$_1 = "onsameline"
+goto _std_print
+:_std__print_end
+
+
+:end

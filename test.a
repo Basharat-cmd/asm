@@ -1,0 +1,7 @@
+/*label*/greet:
+std::cout << "Hello " << __vars_["_1"];
+/*label_goto*/goto _greet_end;
+
+/*label*/greete:
+std::cout << "He " << __vars_["_1"];
+/*label_goto*/goto _greete_end;

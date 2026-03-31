@@ -1,0 +1,8 @@
+/*label*/println:
+std::cout << __vars_["_1"];
+std::cout<<std::endl;
+/*label_goto*/goto _println_end;
+/*label*/print:
+std::cout << __vars_["_1"];
+/*label_goto*/goto _print_end;
+

@@ -3,13 +3,14 @@ import os
 import sys
 
 """
-$a = "hi"
-"$a"
-push $a
-$a = "a"
-"$a"
-pop $a
-"$a"
+import file f
+
+:start
+$_1 = "test.txt"
+goto _f_read_file
+:_f__read_file_end
+"content of $"test.txt$": $_return"
+:end
 """
 
 def escape_handler(s: str, lineno):
@@ -90,7 +91,10 @@ def escape_handler(s: str, lineno):
 
 def main():
     filename = ""
-    header_file = False 
+    header_file = False
+    store_imports = []
+    end_labels = []
+    used_end_labels = []
     try:
         filename = sys.argv[1]
         header_file = True if sys.argv[2] == "-c" else False
@@ -454,7 +458,8 @@ void __cmp_(std::string __a_, std::string __b_) {
             "int main(){",
             "goto start;"
             ]
-
+    if header_file:
+        result = []
     last = "return 0;}"
 
     c_keywords = {
@@ -480,11 +485,16 @@ void __cmp_(std::string __a_, std::string __b_) {
             result.append("std::cout<<std::endl;")
         elif line.startswith(":"):
             lb = line[1:]
+            print("asds" + lb)
+            if lb.endswith("_end"):
+                print("hate:" + lb)
+                end_labels.append(lb)
             if id_v(lb):
                 result.append(f"/*label*/{lb}:")
             else:
                 print(f"Error invalid identifier label :{lb}")
         elif line.startswith("goto"):
+            ln = line[4:-1]
             result.append(f"/*label_goto*/{line};")
         elif line.startswith("\""):
             s = line[1:-1]
@@ -531,17 +541,54 @@ void __cmp_(std::string __a_, std::string __b_) {
             v1 = "__vars_[\"" + v1[1:].strip() + "\"]"
             v2 = "__vars_[\"" + v2[1:].strip() + "\"]"
             result.append(c + "(" + v1 + "," + v2 + ");")
+        elif line == "__version_":
+            result.append("__vars_[\"return\"] = \"alpha snapshot Aw1a\";")
+        elif line.startswith("import"):
+            line = line[6:].strip()
+            fname, falies = line.split(" ", 1)
+            fname = fname.strip()
+            falies = falies.strip()
+            fcon = ""
+            fresult = []
+            try:
+                with open(fname+".a","r") as ff:
+                    fcon = ff.read()
+            except FileNotFoundError:
+                print(f"Error Imported File not found \"{fname}.a\"")
+            if fcon:
+                for l in fcon.split("\n"):
+                    if l=="" or not l or l==n or l.startswith(";"):
+                        pass
+                    elif l.startswith("/*label*/"):
+                        flname = l[9:-1]
+                        flname = "_" + falies + "_" + flname
+                        fresult.append("/*label*/"+flname+":")
+                    elif l.startswith("/*label_goto*/goto"):
+
+                        flname = l[18:-1].strip()
+                        flname = "_" + falies + "_" + flname
+                        fresult.append("/*label_goto*/goto "+flname+";")
+                        if l.endswith("_end;"):
+                            used_end_labels.append(flname)
+                    else:
+                        fresult.append(l)
+                store_imports.append("\n".join(fresult))
+
         else:
             print(f'unknown command "{line}"')
 
-    result.append(last)
+    s_store_imports = "\n".join(store_imports)
+    result.append(s_store_imports)
 
-
-    with open("main.a" if header_file else "main.cpp", "w") as fff:
+    set_end_labels = set(end_labels)
+    set_used_end_labels = set(used_end_labels)
+    need_labels = set_used_end_labels - set_end_labels
+    for lls in list(need_labels):
+        result.append(lls+":")
+    result.append(last if not header_file else "")
+    filename = filename.replace(".as", "")
+    with open(filename +".a" if header_file else filename+".cpp", "w") as fff:
         fff.write("\n".join(result))
-    
-
-    # print(f"result = {"\n".join(result)}")
 
 if __name__ == '__main__':
     main()

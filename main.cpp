@@ -326,21 +326,30 @@ void __lte_(std::string __a_, std::string __b_) {
 int main(){
 goto start;
 /*label*/start:
-__vars_["_1"]="Basharat";
-__vars_["a"]="hi";
-/*label_goto*/goto greet;
-/*label*/_greet_end:
-std::cout << "a = " << __vars_["a"];
-std::cout<<std::endl;
+std::cout << "a";
+__vars_["_1"]="a";
+/*label_goto*/goto _t_greet;
+/*label*/_t__greet_end:
+__vars_["_1"]="onnewline";
+/*label_goto*/goto _std_println;
+/*label*/_std__println_end:
+__vars_["_1"]="onsameline";
+/*label_goto*/goto _std_print;
+/*label*/_std__print_end:
 end:
 return 0;
-/*label*/greet:
-handle_stack(true, "a");
-__vars_["a"]=__vars_["_1"];
-handle_stack(true, "");
-std::cout << "Hello " << __vars_["a"];
-handle_stack(false, "");
-handle_stack(false, "a");
+/*label*/_t_greet:
+std::cout << "Hello " << __vars_["_1"];
+/*label_goto*/goto _t__greet_end;
+/*label*/_t_greete:
+std::cout << "He " << __vars_["_1"];
+/*label_goto*/goto _t__greete_end;
+/*label*/_std_println:
+std::cout << __vars_["_1"];
 std::cout<<std::endl;
-/*label_goto*/goto _greet_end;
+/*label_goto*/goto _std__println_end;
+/*label*/_std_print:
+std::cout << __vars_["_1"];
+/*label_goto*/goto _std__print_end;
+_t__greete_end:
 return 0;}
