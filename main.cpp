@@ -25,19 +25,49 @@ std::string exec(const std::string& __cmd_) {
 }
 
 
-void handle_stack(bool _if){
-    if (_if){
+void handle_stack(bool _if, std::string __v_){
+    
+    if (__v_ != ""){
+        if (_if){
+        _stack.push(__vars_[__v_]);
+        } else {
+            __vars_[__v_] = _stack.top();
+            _stack.pop();
+        }
+    } else if (_if){
         _stack.push(__vars_["_1"]);
         _stack.push(__vars_["_2"]);
+        _stack.push(__vars_["_3"]);
+        _stack.push(__vars_["_4"]); 
+        _stack.push(__vars_["_5"]); 
+        _stack.push(__vars_["_6"]); 
+        _stack.push(__vars_["_7"]); 
+        _stack.push(__vars_["_8"]); 
+        _stack.push(__vars_["_9"]); 
+        _stack.push(__vars_["_10"]); 
         _stack.push(__vars_["_return"]);
     } else {
         if (_stack.size() >= 3) {
             __vars_["_return"] = _stack.top();
             _stack.pop();
-
+            __vars_["_10"] = _stack.top();
+            _stack.pop();
+            __vars_["_9"] = _stack.top();
+            _stack.pop();
+            __vars_["_8"] = _stack.top();
+            _stack.pop();
+            __vars_["_7"] = _stack.top();
+            _stack.pop();
+            __vars_["_6"] = _stack.top();
+            _stack.pop();
+            __vars_["_5"] = _stack.top();
+            _stack.pop();
+            __vars_["_4"] = _stack.top();
+            _stack.pop();
+            __vars_["_3"] = _stack.top();
+            _stack.pop() ;
             __vars_["_2"] = _stack.top();
             _stack.pop();
-
             __vars_["_1"] = _stack.top();
             _stack.pop();
         } else {
@@ -297,11 +327,20 @@ int main(){
 goto start;
 /*label*/start:
 __vars_["_1"]="Basharat";
+__vars_["a"]="hi";
 /*label_goto*/goto greet;
 /*label*/_greet_end:
+std::cout << "a = " << __vars_["a"];
+std::cout<<std::endl;
 end:
 return 0;
 /*label*/greet:
-std::cout << "Hello " << __vars_["_1"];
+handle_stack(true, "a");
+__vars_["a"]=__vars_["_1"];
+handle_stack(true, "");
+std::cout << "Hello " << __vars_["a"];
+handle_stack(false, "");
+handle_stack(false, "a");
+std::cout<<std::endl;
 /*label_goto*/goto _greet_end;
 return 0;}

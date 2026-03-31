@@ -2,6 +2,15 @@ import re
 import os
 import sys
 
+"""
+$a = "hi"
+"$a"
+push $a
+$a = "a"
+"$a"
+pop $a
+"$a"
+"""
 
 def escape_handler(s: str, lineno):
     i = 0
@@ -92,19 +101,49 @@ def main():
         code = ff.read()
 
     stack_func = """
-void handle_stack(bool _if){
-    if (_if){
+void handle_stack(bool _if, std::string __v_){
+    
+    if (__v_ != ""){
+        if (_if){
+        _stack.push(__vars_[__v_]);
+        } else {
+            __vars_[__v_] = _stack.top();
+            _stack.pop();
+        }
+    } else if (_if){
         _stack.push(__vars_[\"_1\"]);
         _stack.push(__vars_[\"_2\"]);
+        _stack.push(__vars_[\"_3\"]);
+        _stack.push(__vars_[\"_4\"]); 
+        _stack.push(__vars_[\"_5\"]); 
+        _stack.push(__vars_[\"_6\"]); 
+        _stack.push(__vars_[\"_7\"]); 
+        _stack.push(__vars_[\"_8\"]); 
+        _stack.push(__vars_[\"_9\"]); 
+        _stack.push(__vars_[\"_10\"]); 
         _stack.push(__vars_[\"_return\"]);
     } else {
         if (_stack.size() >= 3) {
             __vars_[\"_return\"] = _stack.top();
             _stack.pop();
-
+            __vars_[\"_10\"] = _stack.top();
+            _stack.pop();
+            __vars_[\"_9\"] = _stack.top();
+            _stack.pop();
+            __vars_[\"_8\"] = _stack.top();
+            _stack.pop();
+            __vars_[\"_7\"] = _stack.top();
+            _stack.pop();
+            __vars_[\"_6\"] = _stack.top();
+            _stack.pop();
+            __vars_[\"_5\"] = _stack.top();
+            _stack.pop();
+            __vars_[\"_4\"] = _stack.top();
+            _stack.pop();
+            __vars_[\"_3\"] = _stack.top();
+            _stack.pop() ;
             __vars_[\"_2\"] = _stack.top();
             _stack.pop();
-
             __vars_[\"_1\"] = _stack.top();
             _stack.pop();
         } else {
@@ -466,10 +505,18 @@ void __cmp_(std::string __a_, std::string __b_) {
             c = escape_handler(c[1:-1], lineno)
             result.append("__vars_[\"_system_output\"] = exec(" + c + ")")
 
-        elif line == "push":
-            result.append("handle_stack(true);")
-        elif line == "pop":
-            result.append("handle_stack(false);")
+        elif line.startswith("push"):
+            a = line[4:].strip()
+            if a.startswith("$"):
+                result.append("handle_stack(true, \""+a[1:]+"\");")
+            else:
+                result.append("handle_stack(true, \"\");")
+        elif line.startswith("pop"):
+            a = line[4:].strip()
+            if a.startswith("$"):
+                result.append("handle_stack(false, \""+a[1:]+"\");")
+            else:
+                result.append("handle_stack(false, \"\");")
         elif line.startswith("input"):
             vn = line[5:].strip()
             vn = vn[1:].strip()
